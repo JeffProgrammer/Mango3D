@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
 project(Mango3D)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 99)
 if (APPLE)
     enable_language(OBJC)
     enable_language(OBJCXX)
@@ -20,27 +21,8 @@ if(NOT APPLE)
    add_library(glad thirdparty/glad/src/glad.c)
 endif()
 
-if (APPLE)
-    add_library(imgui 
-        thirdparty/imgui/imgui.cpp
-        thirdparty/imgui/imgui_draw.cpp
-        thirdparty/imgui/imgui_tables.cpp
-        thirdparty/imgui/imgui_widgets.cpp
-        thirdparty/imgui/backends/imgui_impl_glfw.cpp
-        thirdparty/imgui/backends/imgui_impl_metal.mm
-    )
-    target_compile_options(imgui PUBLIC "-fobjc-arc")
-else()
-    add_library(imgui 
-        thirdparty/imgui/imgui.cpp
-        thirdparty/imgui/imgui_draw.cpp
-        thirdparty/imgui/imgui_tables.cpp
-        thirdparty/imgui/imgui_widgets.cpp
-        thirdparty/imgui/backends/imgui_impl_glfw.cpp
-        thirdparty/imgui/backends/imgui_impl_opengl3.cpp
-    )
-endif()
-target_include_directories(imgui PRIVATE thirdparty/imgui)
+include(cmake/imgui.cmake)
+include(cmake/lua.cmake)
 
 # Our Source Code
 set(ENGINE_SRC
@@ -78,7 +60,7 @@ else()
 endif()
 
 add_executable(Engine ${ENGINE_SRC})
-target_link_libraries(Engine glfw imgui)
+target_link_libraries(Engine glfw imgui lua)
 target_include_directories(Engine PRIVATE engine)
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ENGINE_SRC})
 
@@ -94,6 +76,7 @@ include_directories(
     thirdparty/glfw/include
     thirdparty/imgui
     thirdparty/imgui/backends
+    thirdparty/lua/src
 )
 
 if(APPLE)
