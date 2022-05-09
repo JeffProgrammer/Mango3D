@@ -33,6 +33,14 @@ set(ENGINE_SRC
     engine/gfx/gfxDevice.h
     engine/gfx/gfxTypes.h
 
+    engine/gui/gui.cpp
+    engine/gui/gui.h
+
+    engine/scripting/scriptEngine.cpp
+    engine/scripting/scriptEngine.h
+    engine/scripting/scriptHelper.h
+    engine/scripting/scriptObject.h
+
     engine/main.cpp
 )
 
