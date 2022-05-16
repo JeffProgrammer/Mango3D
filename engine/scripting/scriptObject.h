@@ -4,6 +4,6 @@ namespace Mango
 {
    class ScriptObject
    {
-
+      
    };
 }

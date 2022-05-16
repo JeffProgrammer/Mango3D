@@ -22,9 +22,13 @@ namespace Mango
       inline T getParameter(S32 arg);
 
       template<typename T>
-      inline void returnValue(T ret, S32 arg = 0);
+      inline void returnValue(T ret);
+      
+      inline void returnNil() {
+         lua_pushnil(lua);
+      }
 
-      int getReturnCount() {
+      inline int getReturnCount() {
          return retCount;
       }
    };
@@ -32,7 +36,14 @@ namespace Mango
    template<>
    inline ScriptObject* ScriptHelper::getParameter<ScriptObject*>(S32 arg)
    {
-      return NULL;
+      const void* ptr = lua_topointer(lua, lua_gettop(lua) - arg);
+      return (ScriptObject*)ptr;
+   }
+
+   template<>
+   inline bool ScriptHelper::getParameter<bool>(S32 arg)
+   {
+      return lua_toboolean(lua, lua_gettop(lua) - arg);
    }
 
    template<>
@@ -56,30 +67,41 @@ namespace Mango
    template<>
    inline const char* ScriptHelper::getParameter<const char*>(S32 arg)
    {
-      return 0;
+      return luaL_checkstring(lua, lua_gettop(lua) - arg);
    }
 
    template<>
-   inline void ScriptHelper::returnValue<ScriptObject*>(ScriptObject* ret, S32 argc)
+   inline void ScriptHelper::returnValue<ScriptObject*>(ScriptObject* ret)
    {
       ++retCount;
+      assert(false);
    }
 
    template<>
-   inline void ScriptHelper::returnValue<F64>(F64 ret, S32 argc)
+   inline void ScriptHelper::returnValue<F64>(F64 ret)
    {
       ++retCount;
+      lua_pushnumber(lua, (lua_Number)ret);
    }
 
    template<>
-   inline void ScriptHelper::returnValue<S64>(S64 ret, S32 argc)
+   inline void ScriptHelper::returnValue<S64>(S64 ret)
    {
       ++retCount;
+      lua_pushinteger(lua, (lua_Integer)ret);
    }
 
    template<>
-   inline void ScriptHelper::returnValue<S32>(S32 ret, S32 argc)
+   inline void ScriptHelper::returnValue<S32>(S32 ret)
    {
       ++retCount;
+      lua_pushinteger(lua, (lua_Integer)ret);
+   }
+
+   template<>
+   inline void ScriptHelper::returnValue<const char*>(const char* ret)
+   {
+      ++retCount;
+      lua_pushstring(lua, ret);
    }
 }
