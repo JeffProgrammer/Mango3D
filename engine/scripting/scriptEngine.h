@@ -9,13 +9,20 @@ namespace Mango
    {
    public:
       ScriptEngine();
+      
       void init();
       void shutdown();
+      
       bool execute(const char* fileName);
       const char* eval(const char* code);
 
-      void setGlobalVariable(const char* variable, const char* value);
-      const char* getGlobalVariable(const char* variable);
+      void setStringVariable(const char* variable, const char* value) const;
+      void setFloatVariable(const char* variable, F64 value) const;
+      void setIntVariable(const char* variable, S64 value) const;
+      
+      const char* getStringVariable(const char* variable) const;
+      F64 getFloatVariable(const char* variable) const;
+      S64 getIntVariable(const char* variable) const;
 
       lua_State* getLuaInst() const { return mLua; }
       
